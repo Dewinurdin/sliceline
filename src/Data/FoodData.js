@@ -35,11 +35,6 @@ export const foodItems = [
     section: 'Pizza'
   },
   {
-    name: 'Pepperoni Pizza',
-    img: '/img/pepperoni-pizza.jpg',
-    section: 'Pizza'
-  },
-  {
     name: 'Healthy Pizza',
     img: '/img/vegetarian-pizza.jpg',
     section: 'Pizza'
