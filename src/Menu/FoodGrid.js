@@ -5,15 +5,15 @@ export const FoodGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-`
+`;
 
-export const FoodLable = styled.div`
+export const FoodLable = styled(Title)`
   position: absolute;
   background-color: rgba(255, 255, 255, .8);
   padding: 5px;
-`
+`;
 
-export const Food = styled(Title)`
+export const Food = styled.div`
   height: 100px;
   padding: 10px;
   font-size: 20px;
