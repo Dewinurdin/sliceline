@@ -35,12 +35,12 @@ const IncrementButton = styled.div`
     };
 `;
 
-export function QuantityInput({quantity}){
+export function QuantityInput({ quantity }){
   return (
     <IncrementContainer>
       <div>Quantity:</div>
       <IncrementButton 
-        onClick={()=>{
+        onClick={() => {
           quantity.setValue(quantity.value - 1);
         }} 
         disabled={quantity.value === 1}
@@ -49,7 +49,7 @@ export function QuantityInput({quantity}){
       </IncrementButton>
       <QuantityInputStyled {...quantity} />
       <IncrementButton
-        onClick={()=>{
+        onClick={() => {
           quantity.setValue(quantity.value + 1);
         }} 
       > 

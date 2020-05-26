@@ -17,7 +17,7 @@ const OrderStyled = styled.div`
   background-color: white;
   height: calc(100% - 48px);
   z-index: 10;
-  box-shadow: 4px 0px 5px 4px grey;
+  box-shadow: 4px 0px 5px 4px #9e9e9e;
   display: flex;
   flex-direction: column;
 `;
@@ -29,7 +29,16 @@ const OrderContent = styled(DialogContent)`
 
 const OrderContainer = styled.div`
   padding: 10px;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid #9e9e9e;
+  ${({ editable }) => editable ?
+    `&:hover {
+      cursor: pointer;
+      background-color: #e7e7e7;
+    }
+    `
+    :
+    `pointer-events: none;`
+  }
 `;
 
 const OrderItem = styled.div`
@@ -40,11 +49,11 @@ const OrderItem = styled.div`
 `;
 
 const DetailItem = styled.div`
-  color: gray;
+  color: #9e9e9e;
   font-size: 12px;
 `;
 
-export function Order ({orders}){
+export function Order ({ orders, setOrders, setOpenFood }){
   const subtotal = orders.reduce((total, order) => {
     return total + getPrice(order);
     // set initial value of total set to 0
@@ -54,29 +63,46 @@ export function Order ({orders}){
   const tax = subtotal * 0.0825;
   const total = subtotal + tax;
 
+  const deleteItem = index => {
+    const newOrders = [...orders];
+    // adds/removes items to/from an array, and returns the removed item(s)
+    newOrders.splice(index, 1);
+    setOrders(newOrders)
+  }
+
   return (
     <OrderStyled>
       {orders.length === 0 ? (
         <OrderContent>Your Order is Looking Empty</OrderContent>
         ) : (
         <OrderContent> 
-          <OrderContainer>
-            Your Order: 
-          </OrderContainer>
-          {orders.map(order => (
-            <OrderContainer>
-              <OrderItem>
+          <OrderContainer> Your Order: </OrderContainer>
+          {orders.map((order, index) => (
+            <OrderContainer editable>
+              <OrderItem 
+                onClick={() => setOpenFood({ ...order, index})}
+              >
                 <div>{order.quantity}</div>
                 <div>{order.name}</div>
+                <div style={{cursor: "pointer"}}
+                  onClick={(e) => {
+                    // prevents Propagation means bubbling up to parent elements or capturing down to child elements
+                    e.stopPropagation();
+                    deleteItem(index)
+                  }}
+                >🗑️
+                </div>
                 <div>{formatPrice(getPrice(order))}</div>
               </OrderItem>
               <DetailItem>
                 {order.toppings
-                  .filter(toppingcheckbox => toppingcheckbox.checked)
+                  .filter(t => t.checked)
                   .map(topping => topping.name)
                   .join(", ")
-                  }
+                }
               </DetailItem>
+              {/* if the order have a choice, render that choice as detail item*/}
+              {order.choice && <DetailItem>{order.choice}</DetailItem>}
             </OrderContainer>
           ))}
           <OrderContainer>

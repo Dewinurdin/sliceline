@@ -6,7 +6,7 @@ export function useQuantity(defaultQuantity){
   function onChange(e){
     // convert the value to number with + Operator
       // and if the number is Not Greater than 1
-    if( !(+e.target.value >= 1)){
+    if ( !(+e.target.value >= 1)){
       // we are setting default to value 1
       setValue(1);
       return;

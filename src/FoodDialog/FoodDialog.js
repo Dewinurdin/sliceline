@@ -8,6 +8,8 @@ import { QuantityInput } from '../FoodDialog/QuantityInput';
 import { useQuantity } from '../Hooks/useQuantity';
 import { Toppings } from './Toppings';
 import { useToppings } from '../Hooks/useToppings';
+import { useChoice } from '../Hooks/useChoice';
+import { Choices } from './Choices';
 
 const Dialog = styled.div`
   width: 500px;
@@ -28,7 +30,7 @@ export const DialogContent = styled.div`
 `;
 
 export const DialogFooter = styled.div`
-  box-shadow: 0px -2px 8px 0px grey;
+  box-shadow: 0px -2px 8px 0px #9e9e9e;
   height: 60px;
   display: flex;
   justify-content: center;
@@ -44,6 +46,14 @@ export const ConfirmButton = styled(Title)`
   width: 200px;
   cursor: pointer;
   background-color: ${pizzaRed};
+    // whether we pass in disable props, 
+      // if we have disabled, then apply these styles
+  ${({ disabled }) => disabled &&
+  `
+  opacity: .5;
+  background-color: #9e9e9e;
+  pointer-events: none;
+  `}
 `;
 
 const DialogShadow = styled.div`
@@ -59,7 +69,14 @@ const DialogShadow = styled.div`
 const DialogBanner = styled.div`
   min-height: 200px;
   margin-bottom: 20px;
-  ${({img})=> `background-image: url(${img});`};
+  // if we have image render image
+    // else min-height 75px
+  ${({img}) => (
+    img ?
+  `background-image: url(${img});` 
+  : 
+  'min-height: 75px;'
+  )};
   background-position: center;
   background-size: cover;
 `;
@@ -68,30 +85,46 @@ const DialogBannerName = styled(FoodLable)`
   top: 100px;
   font-size: 30px;
   padding: 5px 40px;
+  // check if we have an image
+    // if we do render top of 100px else 20px 
+  top: ${({ img }) => (img ? '100px' : '20px' )};
 `;
 
 const pricePerTopping = 0.5;
+
+export function getPrice(order){
+  return (
+    order.quantity + (order.price + 
+      order.toppings.filter(t => t.checked).length * pricePerTopping)
+  );
+}
 
 function hasToppings(food){
   return food.section === 'Pizza';
 }
 
-export function getPrice(order){
-  return order.quantity = (order.price + order.toppings.filter(toppingcheckbox => toppingcheckbox.checked).length * pricePerTopping);
-}
-
 export function FoodDialogContainer({ openFood, setOpenFood, setOrders, orders }){
   const quantity = useQuantity(openFood && openFood.quantity);
   const toppings = useToppings(openFood.toppings)
+  const choiceRadio = useChoice(openFood.choice);
+  const isEditing = openFood.index > -1;
 
   function close(){
     setOpenFood();
   };
 
+  function editOrder(){
+    const newOrders = [...orders];
+    newOrders[openFood.index] = order;
+    setOrders(newOrders);
+    close();
+  };
+
   const order = { 
     ...openFood,
     quantity: quantity.value,
-    toppings: toppings.toppings
+    toppings: toppings.toppings,
+    choice: choiceRadio.value
   };
   
   function addToOrder(){
@@ -114,10 +147,19 @@ export function FoodDialogContainer({ openFood, setOpenFood, setOrders, orders }
               <Toppings {...toppings} />
             </> 
           )}
+          {/* if there is radio button choices then Render this Radio */}
+          { openFood.choices && ( 
+            <Choices openFood={openFood} choiceRadio={choiceRadio} /> 
+          )}
         </DialogContent>
         <DialogFooter>
-          <ConfirmButton onClick={addToOrder}>
-            Add to order {formatPrice(getPrice(order))}
+          <ConfirmButton 
+            onClick={isEditing ? editOrder : addToOrder} 
+            // if there is radio button has No value, then disable the add to order button
+            disabled={openFood.choices && !choiceRadio.value}
+          >
+            {isEditing ? `Update order:` : `Add to order:`} 
+            {formatPrice(getPrice(order))}
           </ConfirmButton>
         </DialogFooter>
       </Dialog>

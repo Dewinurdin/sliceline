@@ -53,6 +53,12 @@ export const foodItems = [
     img: '/img/vegetarian-pizza.jpg',
     section: 'Pizza',
     price: 2
+  },
+  {
+    name: 'Soda',
+    section: 'Drinks',
+    choices: ['Coke', 'Sprite','Root Beer'],
+    price: 1
   }
 ];
   // reduce built in function takes res (result) as first argument
