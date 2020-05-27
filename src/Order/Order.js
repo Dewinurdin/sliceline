@@ -53,7 +53,7 @@ const DetailItem = styled.div`
   font-size: 12px;
 `;
 
-export function Order ({ orders, setOrders, setOpenFood }){
+export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
   const subtotal = orders.reduce((total, order) => {
     return total + getPrice(order);
     // set initial value of total set to 0
@@ -91,7 +91,7 @@ export function Order ({ orders, setOrders, setOpenFood }){
                     deleteItem(index)
                   }}
                 >
-                <span role="img"> 🗑️ </span>
+                      <span role="img" aria-label="trash bin"> 🗑️ </span>
                 </div>
                 <div>{formatPrice(getPrice(order))}</div>
               </OrderItem>
@@ -127,7 +127,16 @@ export function Order ({ orders, setOrders, setOpenFood }){
         </OrderContent>
         )}
       <DialogFooter>
-        <ConfirmButton>Check Out</ConfirmButton>
+        <ConfirmButton onClick={() => {
+          if (loggedIn){
+            console.log("Logged in")
+          } else {
+            login();
+          }
+        }}
+        >
+        Check Out
+        </ConfirmButton>
       </DialogFooter>
     </OrderStyled>
   )

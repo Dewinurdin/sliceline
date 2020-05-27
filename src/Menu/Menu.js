@@ -22,8 +22,8 @@ export function Menu({ setOpenFood }){
       <>
         <h1> {sectionName} </h1>
         <FoodGrid>
-          {foods.map(food => (
-            <Food img={food.img} onClick={()=> {
+          {foods.map((food, index) => (
+            <Food img={food.img} key={index} onClick={()=> {
               setOpenFood(food);
             }}> 
               <FoodLable>
