@@ -90,7 +90,8 @@ export function Order ({ orders, setOrders, setOpenFood }){
                     e.stopPropagation();
                     deleteItem(index)
                   }}
-                >🗑️
+                >
+                <span role="img"> 🗑️ </span>
                 </div>
                 <div>{formatPrice(getPrice(order))}</div>
               </OrderItem>
