@@ -9,7 +9,7 @@ const RadioInput = styled.input`
 
 const Label = styled.label`
   ${CursorPointer}
-`;
+`; 
 
 export function Choices({openFood, choiceRadio}){
   return (

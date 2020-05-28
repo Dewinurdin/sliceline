@@ -96,7 +96,7 @@ function sendOrder(orders, {email, displayName}){
   });
 }
 
-export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
+export function Order ({ orders, setOrders, setOpenFood, login, loggedIn, setOpenOrderDialog }){
   const subtotal = orders.reduce((total, order) => {
     return total + getPrice(order);
     // set initial value of total set to 0
@@ -135,7 +135,7 @@ export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
                     deleteItem(index)
                   }}
                 >
-                  <span role="img" aria-label="trash bin"> 🗑️ </span>
+                  <span role="img" aria-label="trash bin emoji"> 🗑️ </span>
                 </div>
                 <div>{formatPrice(getPrice(order))}</div>
               </OrderItem>
@@ -171,18 +171,22 @@ export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
           </OrderContainer>
         </OrderContent>
         )}
-      <DialogFooter>
-        <ConfirmButton onClick={() => {
-          if (loggedIn){
-            sendOrder(orders, loggedIn)
-          } else {
-            login();
-          }
-        }}
-        >
-        Check Out
-        </ConfirmButton>
+      {orders.length > 0 && 
+        <DialogFooter>
+          <ConfirmButton onClick={() => {
+            if (loggedIn){
+              setOpenOrderDialog(true);
+              sendOrder(orders, loggedIn)
+              console.log("Your Order: ", orders);
+              console.log("Your Name: ", loggedIn.displayName);
+              console.log("Your Email: ", loggedIn.email);
+            } else {
+              login();
+            }
+          }}
+          > Check Out </ConfirmButton>
       </DialogFooter>
+      }
     </OrderStyled>
   )
 };
