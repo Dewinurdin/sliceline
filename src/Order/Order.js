@@ -8,6 +8,7 @@ import {
 import { formatPrice } from '../Data/FoodData';
 import { getPrice } from '../FoodDialog/FoodDialog';
 
+const database = window.firebase.database();
 
 const OrderStyled = styled.div`
   position: fixed;
@@ -53,6 +54,48 @@ const DetailItem = styled.div`
   font-size: 12px;
 `;
 
+function sendOrder(orders, {email, displayName}){
+  // push new oder
+  const newOrderRef = database.ref('orders').push();
+  // take current order and map
+  const newOrders = orders.map(order => {
+    // passing the key down onto the order 
+    return Object.keys(order).reduce((accumulator, orderKey) => {
+      // check there is no undefined keys
+      if(!order[orderKey]){
+        // if nothing undefined, return current accumulator
+        // eg: if there is no topping or anything, there is no need to keep that in the order
+        return accumulator;
+      }
+      // loop over each of toppings keys
+        // if the keys is tooping, return current order
+      if (orderKey === "toppings"){
+        return {
+          ...accumulator,
+          // [key] and [value of that order]
+          [orderKey]: order[orderKey]
+          // filter the toppings to only the checked ones
+          .filter(({checked}) => checked)
+          // map the name of the toppings checked only
+          // returning the array of map of currently checked toppings
+          .map(({ name }) => name)
+        };
+      }
+      return {
+        ...accumulator,
+        [orderKey]: order[orderKey]
+      };
+      // passing initial object as empty {}
+    }, {});
+  });
+  // pass it to firebase database reference
+  newOrderRef.set({
+    displayName,
+    email,
+    order: newOrders
+  });
+}
+
 export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
   const subtotal = orders.reduce((total, order) => {
     return total + getPrice(order);
@@ -78,7 +121,7 @@ export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
         <OrderContent> 
           <OrderContainer> Your Order: </OrderContainer>
           {orders.map((order, index) => (
-            <OrderContainer editable>
+            <OrderContainer editable key={index}>
               <OrderItem 
                 onClick={() => setOpenFood({ ...order, index})}
               >
@@ -86,17 +129,19 @@ export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
                 <div>{order.name}</div>
                 <div style={{cursor: "pointer"}}
                   onClick={(e) => {
-                    // prevents Propagation means bubbling up to parent elements or capturing down to child elements
+                    // prevents Propagation means bubbling up to parent elements 
+                    // or capturing down to child elements
                     e.stopPropagation();
                     deleteItem(index)
                   }}
                 >
-                      <span role="img" aria-label="trash bin"> 🗑️ </span>
+                  <span role="img" aria-label="trash bin"> 🗑️ </span>
                 </div>
                 <div>{formatPrice(getPrice(order))}</div>
               </OrderItem>
               <DetailItem>
                 {order.toppings
+                // creates a new array with all checked topping elements 
                   .filter(t => t.checked)
                   .map(topping => topping.name)
                   .join(", ")
@@ -129,7 +174,7 @@ export function Order ({ orders, setOrders, setOpenFood, login, loggedIn }){
       <DialogFooter>
         <ConfirmButton onClick={() => {
           if (loggedIn){
-            console.log("Logged in")
+            sendOrder(orders, loggedIn)
           } else {
             login();
           }

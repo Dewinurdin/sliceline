@@ -18,14 +18,16 @@ export function Menu({ setOpenFood }){
         which has a key the sectionName 
         and Value which is the foods
       */}
-    {Object.entries(foods).map(([sectionName, foods]) => (
+    {Object.entries(foods).map(([sectionName, foods], i) => (
       <>
         <h1> {sectionName} </h1>
-        <FoodGrid>
+        <FoodGrid key={i}>
           {foods.map((food, index) => (
-            <Food img={food.img} key={index} onClick={()=> {
-              setOpenFood(food);
-            }}> 
+            <Food 
+              key={index} 
+              img={food.img} 
+              onClick={()=> setOpenFood(food)}
+            > 
               <FoodLable>
                 <div>{food.name}</div>
                 <div>{formatPrice(food.price)}</div>

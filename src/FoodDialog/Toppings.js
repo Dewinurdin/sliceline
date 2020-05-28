@@ -18,16 +18,18 @@ const CheckboxLabel = styled.label`
 export function Toppings({toppings, checkTopping}){
   return (
     <ToppingGrid>
-      {toppings.map((topping, i) => <CheckboxLabel>
-        <ToppingCheckbox 
-          type="checkbox" 
-          checked={toppings.checked}
-          onClick={()=> {
-            checkTopping(i);
-          }}  
-        />
-        {topping.name}
-      </CheckboxLabel>
+      {toppings.map((topping, i) => (
+        <CheckboxLabel key={i}>
+          <ToppingCheckbox 
+            type="checkbox" 
+            checked={toppings.checked}
+            onClick={()=> {
+              checkTopping(i);
+            }}  
+          />
+          {topping.name}
+        </CheckboxLabel>
+      )
     )}
     </ToppingGrid>
   )

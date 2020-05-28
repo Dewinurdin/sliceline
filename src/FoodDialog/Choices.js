@@ -15,9 +15,10 @@ export function Choices({openFood, choiceRadio}){
   return (
     <>
       <h3>Choose one</h3>
-      {openFood.choices.map(choice => (
+      {openFood.choices.map((choice, index) => (
         <>
           <RadioInput 
+            key={index}
             type="radio"
             id={choice}
             name="choice"
@@ -25,7 +26,7 @@ export function Choices({openFood, choiceRadio}){
             checked={choiceRadio.value === choice}
             onChange={choiceRadio.onChange}
           />
-          <Label for={choice}> {choice} </Label>
+          <Label htmlFor={choice}> {choice} </Label>
         </>
       ))}
     </>
