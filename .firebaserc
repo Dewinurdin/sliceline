@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "sliceline-4eeee"
+    "default": "sliceline-4eeee",
+    "sliceline-alias": "sliceline-4eeee"
   }
 }

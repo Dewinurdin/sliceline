@@ -64,6 +64,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ad
 This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
 
 firebase init
+firebase deploy
 
 ### `yarn build` fails to minify
 
